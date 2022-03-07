@@ -12,18 +12,36 @@ export function css(styles = {}) {
     return Object.keys(styles).map(toString).join(";");
 }
 
-export function block(type) {
+export function formBlock(type, inputBlocks, index, length) {
+    let inner = inputBlocks.join("");
     return `
-    <form name="${type}">
+    <form onsubmit="apply(event, ${index})">
         <h5>${type}</h5>
-        <div class="form-group">
-            <input class="form-control form-control-sm" name="value" placeholder="value">
-        </div>
-        <div class="form-group">
-            <input class="form-control form-control-sm" name="styles" placeholder="styles">
-        </div>
-        <button type="submit" class="btn btn-primary btn-sm">Добавить</button>
-    </form>
+        ${inner}
+        <button type="submit" class="btn btn-primary btn-sm">Сохранить</button>
+        <button type="button" class="btn btn-danger btn-sm" onclick="remove(${index})">Удалить</button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="moveUp(${index})" ${index === 0 ? "disabled" : ""}>🠕</button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="moveDown(${index})" ${
+        index === length - 1 ? "disabled" : ""
+    }>🠗</button>
+        </form>
     <hr />
+    `;
+}
+
+export function inputBlock(name, value) {
+    return `
+        <div class="form-group">
+            <labe>${name}<input class="form-control form-control-sm" name="${name}" value="${value}"></label>
+        </div>
+    `;
+}
+
+export function addingBlock(blockList) {
+    let list = [`<option selected value="">Add Block:</div>`];
+    list.push(...blockList.map((x) => `<option value="${x}"> - ${x}</div>`));
+    return `
+    <select class="form-select" onchange="addBlock(event)">${list.join("")}
+    </select>    
     `;
 }

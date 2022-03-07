@@ -10,9 +10,9 @@ export class App {
 
         site.render(this.model);
 
-        const updateCallback = (newBlock) => {
-            this.model.push(newBlock);
+        const updateCallback = () => {
             site.render(this.model);
+            const sidebar = new Sidebar("#panel", updateCallback);
         };
 
         const sidebar = new Sidebar("#panel", updateCallback);

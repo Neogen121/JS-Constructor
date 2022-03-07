@@ -1,7 +1,7 @@
 import image from "./assets/image.png";
 import { TitleBlock, ImageBlock, ColumnsBlock, TextBlock } from "./classes/blocks";
 
-export const model = [
+export let model = [
     new TitleBlock("Конструктор сайтов на чистом JavaScript", {
         tag: "h2",
         styles: {

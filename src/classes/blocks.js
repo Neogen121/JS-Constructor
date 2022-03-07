@@ -4,27 +4,50 @@ export class Block {
     constructor(value, options) {
         this.value = value;
         this.options = options;
+        Block.prototype.optionsParams = { styles: "" }; //possible options and their default values
     }
 
     toHTML() {
         throw new Error("метод toHTML не реализован");
+    }
+
+    setValueFromForm(form) {
+        this.value = form.value.value;
+    }
+
+    setOptionsFromForm(form) {
+        Object.keys(this.optionsParams).forEach((key) => {
+            this.options[key] = form[param].value;
+        });
+    }
+
+    resetOptions() {
+        Object.keys(this.optionsParams).forEach((key) => {
+            this.options[key] = this.optionsParams[key];
+        });
     }
 }
 
 export class TitleBlock extends Block {
     constructor(value, options) {
         super(value, options);
+        Object.assign(this.optionsParams, super.optionsParams);
+        this.optionsParams.tag = "h1";
     }
 
     toHTML() {
-        const { tag = "h1", styles } = this.options;
-        return row(col(`<${tag}>${this.value}</${tag}>`), css(styles));
+        let ops = this.options;
+        ops.tag = ops.tag || "h1";
+        return row(col(`<${ops.tag}>${this.value}</${ops.tag}>`), css(ops.styles));
     }
 }
 
 export class ImageBlock extends Block {
     constructor(value, options) {
         super(value, options);
+        Object.assign(this.optionsParams, super.optionsParams);
+        this.optionsParams.imageStyles = "";
+        this.optionsParams.alt = "";
     }
 
     toHTML() {
@@ -36,20 +59,27 @@ export class ImageBlock extends Block {
 export class ColumnsBlock extends Block {
     constructor(value, options) {
         super(value, options);
+        Object.assign(this.optionsParams, super.optionsParams);
     }
 
     toHTML() {
         let html = this.value.map(col).join("");
         return row(html, css(this.options.styles));
     }
+
+    setValueFromForm(form) {
+        this.value = form.value.value.split(";").map((x) => x.split(":")[1].trim());
+    }
 }
 
 export class TextBlock extends Block {
     constructor(value, options) {
         super(value, options);
+        Object.assign(this.optionsParams, super.optionsParams);
     }
 
     toHTML() {
         return row(col(`<p>${this.value}</p>`), css(this.options.styles));
     }
 }
+export const blocks = { TitleBlock, ImageBlock, ColumnsBlock, TextBlock };

@@ -1,5 +1,7 @@
-import { block } from "../utils";
-import { TextBlock, TitleBlock } from "./blocks";
+import { model } from "../model";
+import { addingBlock, css, formBlock } from "../utils";
+import { inputBlock } from "../utils";
+import { blocks } from "./blocks";
 
 export class Sidebar {
     constructor(selector, updateCallback) {
@@ -10,26 +12,69 @@ export class Sidebar {
     }
 
     init() {
+        this.$el.innerHTML = "";
         this.$el.insertAdjacentHTML("afterbegin", this.template);
-        this.$el.addEventListener("submit", this.add.bind(this));
+
+        window.remove = this.remove.bind(this);
+        window.apply = this.apply.bind(this);
+        window.addBlock = this.addBlock.bind(this);
+        window.moveUp = this.moveUp.bind(this);
+        window.moveDown = this.moveDown.bind(this);
     }
 
     get template() {
-        return [block("text"), block("title")].join("");
+        let template = model.map((x, i) => {
+            let inputs = [inputBlock("value", css(x.value))];
+
+            inputs.push(
+                ...Object.keys(x.options).map((k) => {
+                    return inputBlock(k, css(x.options[k]));
+                })
+            );
+            return formBlock(x.constructor.name, inputs, i, model.length);
+        });
+        template.push(addingBlock(Object.keys(blocks)));
+        return template.join("");
     }
 
-    add(event) {
+    apply(event, index) {
         event.preventDefault();
+        model[index].setValueFromForm(event.target);
+        model[index].setOptionsFromForm(event.target);
+        this.update();
+    }
 
-        const type = event.target.name;
-        const value = event.target.value.value;
-        const styles = event.target.styles.value;
+    remove(index) {
+        model.splice(index, 1);
+        this.update();
+    }
 
-        const newBlock = type === "text" ? new TextBlock(value, { styles }) : new TitleBlock(value, { styles });
+    addBlock(event) {
+        if (event.target.value) {
+            console.log(event.target.value);
 
-        this.update(newBlock);
+            let block = new blocks[event.target.value]("", {});
+            block.resetOptions();
+            model.push(block);
+            this.update();
+        }
+    }
 
-        event.target.value.value = "";
-        event.target.styles.value = "";
+    moveUp(index) {
+        if (index <= 0 || index >= model.length) return;
+
+        var block = model[index];
+        model.splice(index, 1);
+        model.splice(index - 1, 0, block);
+        this.update();
+    }
+
+    moveDown(index) {
+        if (index < 0 || index >= model.length - 1) return;
+
+        var block = model[index];
+        model.splice(index, 1);
+        model.splice(index + 1, 0, block);
+        this.update();
     }
 }
