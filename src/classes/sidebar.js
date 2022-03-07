@@ -51,8 +51,6 @@ export class Sidebar {
 
     addBlock(event) {
         if (event.target.value) {
-            console.log(event.target.value);
-
             let block = new blocks[event.target.value]("", {});
             block.resetOptions();
             model.push(block);

@@ -641,7 +641,6 @@ class Sidebar {
     }
     addBlock(event) {
         if (event.target.value) {
-            console.log(event.target.value);
             let block = new _blocks.blocks[event.target.value]("", {
             });
             block.resetOptions();
@@ -665,7 +664,7 @@ class Sidebar {
     }
 }
 
-},{"../model":"4ntFQ","../utils":"4iA3n","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh","./blocks":"366ns"}],"4ntFQ":[function(require,module,exports) {
+},{"../model":"4ntFQ","../utils":"4iA3n","./blocks":"366ns","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"4ntFQ":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "model", ()=>model
@@ -786,21 +785,19 @@ class Block {
         this.value = form.value.value;
     }
     setOptionsFromForm(form) {
-        Object.keys(this.optionsParams).forEach((key)=>{
-            this.options[key] = form[param].value;
-        });
+        for(let key in this.optionsParams)this.options[key] = form[key].value;
     }
     resetOptions() {
-        Object.keys(this.optionsParams).forEach((key)=>{
-            this.options[key] = this.optionsParams[key];
-        });
+        for(let key in this.optionsParams)this.options[key] = this.optionsParams[key];
     }
 }
 class TitleBlock extends Block {
     constructor(value, options){
         super(value, options);
-        Object.assign(this.optionsParams, super.optionsParams);
-        this.optionsParams.tag = "h1";
+        this.optionsParams = {
+            ...super.optionsParams,
+            tag: "h1"
+        };
     }
     toHTML() {
         let ops = this.options;
@@ -811,9 +808,11 @@ class TitleBlock extends Block {
 class ImageBlock extends Block {
     constructor(value, options){
         super(value, options);
-        Object.assign(this.optionsParams, super.optionsParams);
-        this.optionsParams.imageStyles = "";
-        this.optionsParams.alt = "";
+        this.optionsParams = {
+            ...super.optionsParams,
+            imageStyles: "",
+            alt: ""
+        };
     }
     toHTML() {
         const { imageStyles: is , alt ="" , styles  } = this.options;
@@ -823,7 +822,9 @@ class ImageBlock extends Block {
 class ColumnsBlock extends Block {
     constructor(value, options){
         super(value, options);
-        Object.assign(this.optionsParams, super.optionsParams);
+        this.optionsParams = {
+            ...super.optionsParams
+        };
     }
     toHTML() {
         let html = this.value.map(_utils.col).join("");
@@ -837,7 +838,9 @@ class ColumnsBlock extends Block {
 class TextBlock extends Block {
     constructor(value, options){
         super(value, options);
-        Object.assign(this.optionsParams, super.optionsParams);
+        this.optionsParams = {
+            ...super.optionsParams
+        };
     }
     toHTML() {
         return _utils.row(_utils.col(`<p>${this.value}</p>`), _utils.css(this.options.styles));
@@ -886,8 +889,8 @@ function formBlock(type, inputBlocks, index, length) {
         ${inner}
         <button type="submit" class="btn btn-primary btn-sm">Сохранить</button>
         <button type="button" class="btn btn-danger btn-sm" onclick="remove(${index})">Удалить</button>
-        <button type="button" class="btn btn-secondary btn-sm" onclick="moveUp(${index})" ${index === 0 ? "disabled" : ""}>🠕</button>
-        <button type="button" class="btn btn-secondary btn-sm" onclick="moveDown(${index})" ${index === length - 1 ? "disabled" : ""}>🠗</button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="moveUp(${index})" ${index === 0 ? "disabled" : ""}>↑</button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="moveDown(${index})" ${index === length - 1 ? "disabled" : ""}>↓</button>
         </form>
     <hr />
     `;

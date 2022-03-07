@@ -20,10 +20,10 @@ export function formBlock(type, inputBlocks, index, length) {
         ${inner}
         <button type="submit" class="btn btn-primary btn-sm">Сохранить</button>
         <button type="button" class="btn btn-danger btn-sm" onclick="remove(${index})">Удалить</button>
-        <button type="button" class="btn btn-secondary btn-sm" onclick="moveUp(${index})" ${index === 0 ? "disabled" : ""}>🠕</button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="moveUp(${index})" ${index === 0 ? "disabled" : ""}>↑</button>
         <button type="button" class="btn btn-secondary btn-sm" onclick="moveDown(${index})" ${
         index === length - 1 ? "disabled" : ""
-    }>🠗</button>
+    }>↓</button>
         </form>
     <hr />
     `;

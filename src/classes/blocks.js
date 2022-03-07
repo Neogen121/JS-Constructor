@@ -16,23 +16,22 @@ export class Block {
     }
 
     setOptionsFromForm(form) {
-        Object.keys(this.optionsParams).forEach((key) => {
-            this.options[key] = form[param].value;
-        });
+        for (let key in this.optionsParams) {
+            this.options[key] = form[key].value;
+        }
     }
 
     resetOptions() {
-        Object.keys(this.optionsParams).forEach((key) => {
+        for (let key in this.optionsParams) {
             this.options[key] = this.optionsParams[key];
-        });
+        }
     }
 }
 
 export class TitleBlock extends Block {
     constructor(value, options) {
         super(value, options);
-        Object.assign(this.optionsParams, super.optionsParams);
-        this.optionsParams.tag = "h1";
+        this.optionsParams = { ...super.optionsParams, ...{ tag: "h1" } };
     }
 
     toHTML() {
@@ -45,9 +44,7 @@ export class TitleBlock extends Block {
 export class ImageBlock extends Block {
     constructor(value, options) {
         super(value, options);
-        Object.assign(this.optionsParams, super.optionsParams);
-        this.optionsParams.imageStyles = "";
-        this.optionsParams.alt = "";
+        this.optionsParams = { ...super.optionsParams, ...{ imageStyles: "", alt: "" } };
     }
 
     toHTML() {
@@ -59,7 +56,7 @@ export class ImageBlock extends Block {
 export class ColumnsBlock extends Block {
     constructor(value, options) {
         super(value, options);
-        Object.assign(this.optionsParams, super.optionsParams);
+        this.optionsParams = { ...super.optionsParams };
     }
 
     toHTML() {
@@ -75,7 +72,7 @@ export class ColumnsBlock extends Block {
 export class TextBlock extends Block {
     constructor(value, options) {
         super(value, options);
-        Object.assign(this.optionsParams, super.optionsParams);
+        this.optionsParams = { ...super.optionsParams };
     }
 
     toHTML() {
