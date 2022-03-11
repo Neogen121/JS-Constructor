@@ -1,20 +1,19 @@
 #app {
     display: flex;
     overflow: hidden;
-    margin: 0;
     padding: 0;
 }
 .row {
     --bs-gutter-x: 0 !important;
 }
 .content {
-    width: 100%;
+    flex: 1;
     height: 100vh;
     overflow-y: scroll;
 }
 
 .sidebar-container {
-    width: 316px;
+    width: 255px;
     height: 100vh;
     overflow-y: scroll;
 }
